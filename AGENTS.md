@@ -52,8 +52,8 @@
 
 ---
 
-## 5. UI/UX Excellence Guidelines
+## 6. Portable Windows Executable Rules
 
-- Maintain a futuristic dark glassmorphism design system (`backdrop-filter: blur(...)`, smooth gradients, neon status indicators for mounted drives).
-- Do NOT use plain default HTML inputs; all buttons, partition bars, drive lists, and file tree nodes must have micro-interactions (hover elevation, active state glows, tooltips).
-- Provide real-time throughput metrics (read/write MB/s, mount uptime) when an image/partition is mounted.
+- **Standalone Portable Target**: The application MUST build as a self-contained portable Windows binary (`.exe`) without requiring installation or writing to Windows Registry.
+- **Relative Path Persistence**: Application settings and mount history MUST check for a relative `./data/` folder alongside the binary before falling back to `%APPDATA%`.
+- **Zero Host Driver Footprint**: WSL2 bridge mounting (`wsl --mount`) is prioritized as it relies on native Windows 11 Hyper-V/WSL functionality without needing custom third-party kernel driver installation.

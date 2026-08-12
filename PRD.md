@@ -114,8 +114,14 @@ graph TD
 
 ---
 
-## 5. Non-Functional Requirements & Security
+## 5. Portable Executable & Non-Functional Requirements
 
+### 5.1 Portable Windows Application Mode
+1. **Zero-Installation Portable Binary**: The application compiles into a self-contained, single-file standalone Windows `.exe` (e.g., `LinuxFS-Manager_v1.0.3_x64_Portable.exe`).
+2. **Zero System Registry Pollution**: All runtime state, mount logs, and session profiles are stored in a relative `./data/` folder alongside the executable when running in portable mode.
+3. **No Driver Setup Overhead**: Leveraging Windows built-in WSL2 kernel mount redirection (`wsl --mount`) allows full Ext4 mounting without installing custom host kernel drivers.
+
+### 5.2 Security & System Requirements
 1. **Safety & Non-Destructive Operation**: Partition scanner MUST perform read-only disk handles to ensure no partition tables are modified accidentally.
 2. **Elevated Privileges (UAC)**: Windows Admin rights are required for raw disk handles and drive letter assignment. Application will prompt for elevation cleanly via manifest.
 3. **Clean Teardown**: In case of unexpected system termination, startup checks will detect orphaned drive letter assignments or stale WSL2 mount endpoints and offer automated cleanup.
