@@ -308,20 +308,20 @@ export function App() {
             right: 32,
             zIndex: 2000,
             padding: '12px 20px',
-            fontSize: '0.9rem',
+            fontSize: '0.88rem',
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
             gap: 10,
             borderRadius: 6,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-            background: toast.type === 'success' ? '#065f46' : '#78350f',
-            border: `1px solid ${toast.type === 'success' ? '#10b981' : '#f59e0b'}`,
-            color: '#ffffff',
+            boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
+            background: 'var(--bg-card)',
+            border: `1px solid ${toast.type === 'success' ? 'var(--emerald)' : 'var(--amber)'}`,
+            color: toast.type === 'success' ? 'var(--emerald)' : 'var(--amber)',
           }}
         >
-          {toast.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
-          <span>{toast.message}</span>
+          {toast.type === 'success' ? <CheckCircle2 size={17} /> : <AlertCircle size={17} />}
+          <span style={{ color: 'var(--text-primary)' }}>{toast.message}</span>
         </div>
       )}
 
