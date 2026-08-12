@@ -1,9 +1,12 @@
 /* ============================================================
-   LinuxFS Manager — Complete Dual Theme System (Dark & Light)
+   LinuxFS Manager — Reliable Dual Theme System (Dark & Light)
    ============================================================ */
 
-/* DARK THEME (Default & [data-theme='dark']) */
-:root, [data-theme='dark'] {
+/* DARK THEME (Default) */
+:root,
+html[data-theme='dark'],
+body[data-theme='dark'],
+.theme-dark {
   --bg-page:          #0f172a;
   --bg-card:          #1e293b;
   --bg-card-hover:    #263348;
@@ -16,16 +19,16 @@
   --accent:           #0284c7;
   --accent-hover:     #0369a1;
   --accent-light:     #38bdf8;
-  --accent-subtle:    rgba(2, 132, 199, 0.15);
+  --accent-subtle:    rgba(2, 132, 199, 0.18);
 
   --emerald:          #10b981;
-  --emerald-subtle:   rgba(16, 185, 129, 0.15);
+  --emerald-subtle:   rgba(16, 185, 129, 0.18);
   --amber:            #f59e0b;
-  --amber-subtle:     rgba(245, 158, 11, 0.15);
+  --amber-subtle:     rgba(245, 158, 11, 0.18);
   --violet:           #8b5cf6;
-  --violet-subtle:    rgba(139, 92, 246, 0.15);
+  --violet-subtle:    rgba(139, 92, 246, 0.18);
   --danger:           #dc2626;
-  --danger-hover:     #b91c1c;
+  --danger-hover:     #ef4444;
 
   --text-primary:     #f8fafc;
   --text-secondary:   #cbd5e1;
@@ -44,8 +47,10 @@
   --radius-lg: 12px;
 }
 
-/* LIGHT THEME ([data-theme='light']) */
-[data-theme='light'] {
+/* LIGHT THEME */
+html[data-theme='light'],
+body[data-theme='light'],
+.theme-light {
   --bg-page:          #f1f5f9;
   --bg-card:          #ffffff;
   --bg-card-hover:    #f8fafc;
@@ -95,7 +100,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Custom Scrollbars */
@@ -112,7 +117,7 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .glass-panel:hover {
@@ -169,7 +174,7 @@ body {
 
 .badge-crimson {
   background: rgba(220, 38, 38, 0.12);
-  color: #dc2626;
+  color: var(--danger);
   border: 1px solid rgba(220, 38, 38, 0.35);
 }
 
@@ -241,7 +246,7 @@ body {
 /* Danger */
 .btn-danger {
   background: rgba(220, 38, 38, 0.12);
-  color: #dc2626;
+  color: var(--danger);
   border-color: rgba(220, 38, 38, 0.35);
 }
 .btn-danger:hover {

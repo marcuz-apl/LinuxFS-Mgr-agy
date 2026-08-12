@@ -6,18 +6,25 @@ export const ThemeToggle: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
 
+  const applyThemeToDOM = (targetTheme: 'light' | 'dark') => {
+    document.documentElement.setAttribute('data-theme', targetTheme);
+    document.body.setAttribute('data-theme', targetTheme);
+    document.documentElement.className = `theme-${targetTheme}`;
+    document.body.className = `theme-${targetTheme}`;
+  };
+
   useEffect(() => {
     setMounted(true);
     const stored = localStorage.getItem('linuxfs-theme');
     const initial = stored ? (stored as 'light' | 'dark') : getCalculatedTheme();
     setTheme(initial);
-    document.documentElement.setAttribute('data-theme', initial);
+    applyThemeToDOM(initial);
   }, []);
 
   const toggleTheme = () => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
-    document.documentElement.setAttribute('data-theme', nextTheme);
+    applyThemeToDOM(nextTheme);
     localStorage.setItem('linuxfs-theme', nextTheme);
   };
 
