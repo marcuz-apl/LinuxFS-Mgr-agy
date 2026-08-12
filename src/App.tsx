@@ -302,7 +302,6 @@ export function App() {
       {/* Toast Notification */}
       {toast && (
         <div
-          className={`glass-panel badge-${toast.type === 'success' ? 'green' : 'amber'}`}
           style={{
             position: 'fixed',
             top: 24,
@@ -310,7 +309,15 @@ export function App() {
             zIndex: 2000,
             padding: '12px 20px',
             fontSize: '0.9rem',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            borderRadius: 6,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+            background: toast.type === 'success' ? '#065f46' : '#78350f',
+            border: `1px solid ${toast.type === 'success' ? '#10b981' : '#f59e0b'}`,
+            color: '#ffffff',
           }}
         >
           {toast.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}

@@ -106,7 +106,7 @@ export const DriveTopologyGrid: React.FC<DriveTopologyGridProps> = ({
                     <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                       <Disc
                         size={22}
-                        color={isExt4 ? 'var(--neon-cyan)' : 'var(--text-secondary)'}
+                        color={isExt4 ? 'var(--fluent-emerald)' : 'var(--text-muted)'}
                       />
                       <div>
                         <div style={{ fontWeight: 700, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -117,7 +117,7 @@ export const DriveTopologyGrid: React.FC<DriveTopologyGridProps> = ({
                             </span>
                           )}
                         </div>
-                        <div className="mono" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: 2 }}>
+                        <div className="mono" style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>
                           {formatBytes(p.capacity_bytes)} Total • {formatBytes(p.free_bytes)} Free
                         </div>
                       </div>
@@ -168,8 +168,8 @@ export const DriveTopologyGrid: React.FC<DriveTopologyGridProps> = ({
         <div className="modal-overlay" onClick={() => setSelectedPartitionDetail(null)}>
           <div className="glass-panel modal-content" onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ fontSize: '1.25rem', color: 'var(--neon-cyan)', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700 }}>
-                <Info size={22} />
+              <h2 style={{ fontSize: '1.2rem', color: 'var(--fluent-accent-light)', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700 }}>
+                <Info size={20} />
                 <span>Volume Inspector — Partition {selectedPartitionDetail.partition_number}</span>
               </h2>
               <button
@@ -181,7 +181,7 @@ export const DriveTopologyGrid: React.FC<DriveTopologyGridProps> = ({
               </button>
             </div>
 
-            <div className="mono" style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '0.85rem', background: 'rgba(5, 8, 18, 0.6)', padding: 20, borderRadius: 12, border: '1px solid var(--glass-border)' }}>
+            <div className="mono" style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '0.85rem', background: '#0f172a', padding: 18, borderRadius: 6, border: '1px solid var(--fluent-card-border)' }}>
               <div><strong>FileSystem:</strong> {selectedPartitionDetail.filesystem}</div>
               <div><strong>Volume GUID Path:</strong> {selectedPartitionDetail.volume_guid_path}</div>
               <div><strong>Device Path:</strong> {selectedPartitionDetail.device_path}</div>
@@ -192,9 +192,9 @@ export const DriveTopologyGrid: React.FC<DriveTopologyGridProps> = ({
               
               {selectedPartitionDetail.ext4_volume_uuid && (
                 <>
-                  <hr style={{ borderColor: 'var(--glass-border)', margin: '8px 0' }} />
-                  <div style={{ color: 'var(--neon-emerald)', fontWeight: 600 }}><strong>Ext4 Volume UUID:</strong> {selectedPartitionDetail.ext4_volume_uuid}</div>
-                  <div style={{ color: 'var(--neon-emerald)', fontWeight: 600 }}><strong>Original Mount Point:</strong> {selectedPartitionDetail.ext4_mount_point}</div>
+                  <hr style={{ borderColor: 'var(--fluent-card-border)', margin: '4px 0' }} />
+                  <div style={{ color: 'var(--fluent-emerald)', fontWeight: 600 }}><strong>Ext4 Volume UUID:</strong> {selectedPartitionDetail.ext4_volume_uuid}</div>
+                  <div style={{ color: 'var(--fluent-emerald)', fontWeight: 600 }}><strong>Original Mount Point:</strong> {selectedPartitionDetail.ext4_mount_point}</div>
                   <div><strong>Block Size:</strong> {selectedPartitionDetail.ext4_block_size} bytes</div>
                   <div><strong>Inode Count:</strong> {selectedPartitionDetail.ext4_inode_count.toLocaleString()}</div>
                   <div>
@@ -211,7 +211,7 @@ export const DriveTopologyGrid: React.FC<DriveTopologyGridProps> = ({
               )}
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button className="btn btn-secondary" onClick={() => setSelectedPartitionDetail(null)}>
                 Close
               </button>

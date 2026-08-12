@@ -1,6 +1,7 @@
 import React from 'react';
 import { HardDrive, ShieldCheck, ShieldAlert, RefreshCw, Cpu } from 'lucide-react';
 import { SystemScanResult } from '../types/disk';
+import packageJson from '../../package.json';
 
 interface HeaderProps {
   scanResult: SystemScanResult | null;
@@ -9,6 +10,8 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ scanResult, onRefresh, isScanning }) => {
+  const currentVersion = packageJson.version || '1.0.7';
+
   return (
     <header className="glass-panel app-header">
       <div className="header-brand">
@@ -49,7 +52,9 @@ export const Header: React.FC<HeaderProps> = ({ scanResult, onRefresh, isScannin
           <span>{isScanning ? 'Scanning...' : 'Rescan System'}</span>
         </button>
 
-        <div className="badge badge-violet mono" style={{ padding: '6px 12px' }}>v1.0.5</div>
+        <div className="badge badge-violet mono" style={{ padding: '6px 12px' }}>
+          v{currentVersion}
+        </div>
       </div>
     </header>
   );

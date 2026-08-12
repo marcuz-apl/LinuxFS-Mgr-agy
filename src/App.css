@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 24px 36px;
-  gap: 28px;
+  padding: 20px 28px;
+  gap: 20px;
   max-width: 1560px;
   margin: 0 auto;
 }
@@ -13,94 +13,82 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 28px;
+  padding: 14px 22px;
   border-radius: var(--radius-md);
 }
 
 .header-brand {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
 }
 
 .brand-logo-container {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(168, 85, 247, 0.25));
-  border: 1px solid rgba(0, 240, 255, 0.5);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--fluent-accent-subtle);
+  border: 1px solid rgba(2, 132, 199, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--neon-cyan);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
-  transition: all 0.3s ease;
-}
-
-.brand-logo-container:hover {
-  transform: rotate(5deg) scale(1.05);
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.6);
+  color: #38bdf8;
 }
 
 .brand-title {
-  font-size: 1.55rem;
-  font-weight: 800;
-  letter-spacing: -0.6px;
-  line-height: 1.2;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #ffffff;
 }
 
 .brand-subtitle {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
+  font-size: 0.8rem;
+  color: var(--text-muted);
   font-weight: 400;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .header-meta {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
-/* HIGH-VISIBILITY NAVIGATION TABS BAR */
+/* Windows 11 Tab Navigation Strip */
 .nav-tabs {
   display: flex;
-  gap: 10px;
-  padding: 8px;
-  background: rgba(10, 14, 26, 0.85);
-  border: 1px solid var(--glass-border);
+  gap: 4px;
+  padding: 4px;
+  background: #1e293b;
+  border: 1px solid var(--fluent-card-border);
   border-radius: var(--radius-md);
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .tab-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 24px;
+  gap: 8px;
+  padding: 10px 20px;
   border-radius: var(--radius-sm);
-  background: rgba(18, 26, 46, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  border: none;
   color: #cbd5e1;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  transition: all 0.15s ease;
 }
 
 .tab-btn:hover {
   color: #ffffff;
-  background: rgba(30, 42, 70, 0.85);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
+  background: #334155;
 }
 
 .tab-btn.active {
-  color: var(--neon-cyan);
-  background: rgba(0, 240, 255, 0.14);
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 18px rgba(0, 240, 255, 0.35);
+  color: #ffffff;
+  background: var(--fluent-accent);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
   font-weight: 700;
 }
 
@@ -108,14 +96,14 @@
 .drives-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(640px, 1fr));
-  gap: 28px;
+  gap: 20px;
 }
 
 .drive-card {
-  padding: 28px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 18px;
 }
 
 .drive-card-header {
@@ -127,121 +115,116 @@
 .drive-info {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .drive-icon {
-  width: 54px;
-  height: 54px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--glass-border);
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  background: #0f172a;
+  border: 1px solid var(--fluent-card-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--neon-cyan);
-  box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.1);
+  color: #38bdf8;
 }
 
 .drive-name {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .drive-specs {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  font-size: 0.78rem;
+  color: var(--text-muted);
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 4px;
+  gap: 8px;
+  margin-top: 2px;
 }
 
 /* Partition Bar */
 .partition-bar-container {
   display: flex;
-  height: 28px;
-  border-radius: 10px;
+  height: 24px;
+  border-radius: 6px;
   overflow: hidden;
-  background: rgba(4, 6, 14, 0.7);
-  border: 1px solid var(--glass-border);
-  padding: 3px;
-  gap: 3px;
+  background: #0f172a;
+  border: 1px solid var(--fluent-card-border);
+  padding: 2px;
+  gap: 2px;
 }
 
 .partition-segment {
   height: 100%;
-  border-radius: 6px;
-  transition: all 0.3s ease;
+  border-radius: 4px;
+  transition: all 0.2s ease;
   position: relative;
   cursor: pointer;
 }
 
 .partition-segment:hover {
-  filter: brightness(1.25);
-  transform: scaleY(1.06);
+  filter: brightness(1.2);
 }
 
 .partition-segment-ntfs {
-  background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+  background: #0284c7;
 }
 
 .partition-segment-ext4 {
-  background: linear-gradient(90deg, #00f0ff, #00ffaa);
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+  background: #10b981;
 }
 
 .partition-segment-fat {
-  background: linear-gradient(90deg, #7e22ce, #a855f7);
+  background: #8b5cf6;
 }
 
 .partition-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .partition-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid var(--glass-border);
+  padding: 12px 16px;
+  background: #0f172a;
+  border: 1px solid var(--fluent-card-border);
   border-radius: var(--radius-sm);
-  transition: all 0.25s ease;
+  transition: all 0.15s ease;
 }
 
 .partition-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: #475569;
 }
 
 .partition-item-ext4 {
-  border-color: rgba(0, 240, 255, 0.4);
-  background: rgba(0, 240, 255, 0.04);
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.05);
 }
 
 /* Image Dropzone */
 .dropzone {
-  border: 2px dashed rgba(0, 240, 255, 0.4);
+  border: 2px dashed #334155;
   border-radius: var(--radius-lg);
-  padding: 56px 40px;
+  padding: 48px 32px;
   text-align: center;
-  background: rgba(0, 240, 255, 0.02);
-  transition: all 0.3s ease;
+  background: #0f172a;
+  transition: all 0.2s ease;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .dropzone:hover, .dropzone.active {
-  border-color: var(--neon-cyan);
-  background: rgba(0, 240, 255, 0.07);
-  box-shadow: 0 0 40px rgba(0, 240, 255, 0.28);
+  border-color: var(--fluent-accent);
+  background: rgba(2, 132, 199, 0.05);
 }
 
 /* Modal Overlay */
@@ -251,68 +234,53 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(3, 5, 12, 0.88);
-  backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 .modal-content {
   width: 100%;
-  max-width: 560px;
-  padding: 36px;
+  max-width: 520px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 26px;
-  animation: slideUp 0.25s ease;
+  gap: 20px;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* High Visibility Drive Letter Buttons */
+/* Drive Letter Grid */
 .letter-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .letter-btn {
-  padding: 12px 6px;
-  border-radius: var(--radius-xs);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(22, 32, 54, 0.9);
+  padding: 10px 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #334155;
+  background: #0f172a;
   color: #ffffff;
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .letter-btn:hover {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-  background: rgba(35, 48, 80, 0.95);
+  border-color: var(--fluent-accent);
+  color: #38bdf8;
+  background: #1e293b;
 }
 
 .letter-btn.selected {
-  background: var(--neon-cyan);
-  color: #020617;
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 18px rgba(0, 240, 255, 0.6);
-  font-weight: 800;
-  text-shadow: none;
+  background: var(--fluent-accent);
+  color: #ffffff;
+  border-color: var(--fluent-accent);
+  font-weight: 700;
 }

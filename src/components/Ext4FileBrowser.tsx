@@ -58,7 +58,7 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h2 style={{ fontSize: '1.2rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Layers size={22} color="var(--neon-cyan)" />
+            <Layers size={22} color="var(--fluent-accent-light)" />
             <span>Ext4 Filesystem Browser — {partitionName}</span>
           </h2>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 2 }}>
@@ -72,7 +72,7 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
       </div>
 
       {/* Path Toolbar */}
-      <div className="glass-panel" style={{ padding: 12, display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(0,0,0,0.3)' }}>
+      <div style={{ padding: 10, display: 'flex', alignItems: 'center', gap: 12, background: '#0f172a', borderRadius: 6, border: '1px solid var(--fluent-card-border)' }}>
         <button
           className="btn btn-secondary"
           style={{ padding: '6px 12px' }}
@@ -83,17 +83,17 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
           <span>Up</span>
         </button>
 
-        <div className="mono" style={{ fontSize: '0.9rem', color: 'var(--neon-cyan)', flexGrow: 1 }}>
+        <div className="mono" style={{ fontSize: '0.9rem', color: 'var(--fluent-accent-light)', flexGrow: 1 }}>
           Ext4://{currentPath}
         </div>
       </div>
 
       {/* File Tree Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
-        <div className="glass-panel" style={{ padding: 16, background: 'rgba(0,0,0,0.2)', maxHeight: 450, overflowY: 'auto' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16 }}>
+        <div style={{ background: '#0f172a', borderRadius: 6, border: '1px solid var(--fluent-card-border)', padding: 16, maxHeight: 450, overflowY: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ color: 'var(--text-muted)', fontSize: '0.78rem', textAlign: 'left', borderBottom: '1px solid var(--glass-border)' }}>
+              <tr style={{ color: 'var(--text-muted)', fontSize: '0.78rem', textAlign: 'left', borderBottom: '1px solid var(--fluent-card-border)' }}>
                 <th style={{ padding: 8 }}>Name</th>
                 <th style={{ padding: 8 }}>Permissions</th>
                 <th style={{ padding: 8 }}>Owner</th>
@@ -106,8 +106,8 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
                   key={entry.path}
                   style={{
                     cursor: 'pointer',
-                    background: selectedEntry?.path === entry.path ? 'rgba(0,240,255,0.08)' : 'transparent',
-                    borderBottom: '1px solid rgba(255,255,255,0.03)',
+                    background: selectedEntry?.path === entry.path ? 'var(--fluent-accent-subtle)' : 'transparent',
+                    borderBottom: '1px solid rgba(255,255,255,0.04)',
                   }}
                   onClick={() => setSelectedEntry(entry)}
                   onDoubleClick={() => {
@@ -116,7 +116,7 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
                 >
                   <td style={{ padding: 8, display: 'flex', alignItems: 'center', gap: 8, fontWeight: 500 }}>
                     {entry.is_dir ? (
-                      <Folder size={18} color="var(--neon-cyan)" />
+                      <Folder size={18} color="var(--fluent-accent-light)" />
                     ) : (
                       <FileText size={18} color="var(--text-muted)" />
                     )}
@@ -138,17 +138,17 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
         </div>
 
         {/* Selected File Details Panel */}
-        <div className="glass-panel" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--neon-cyan)' }}>
+        <div style={{ background: '#0f172a', borderRadius: 6, border: '1px solid var(--fluent-card-border)', padding: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--fluent-accent-light)' }}>
             Entry Inspector
           </h3>
 
           {selectedEntry ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ fontWeight: 600, fontSize: '1.05rem', wordBreak: 'break-all' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ fontWeight: 600, fontSize: '1.05rem', wordBreak: 'break-all', color: '#ffffff' }}>
                 {selectedEntry.name}
               </div>
-              <div className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              <div className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <div><strong>Path:</strong> {selectedEntry.path}</div>
                 <div><strong>Type:</strong> {selectedEntry.is_dir ? 'Directory' : 'Regular File'}</div>
                 <div><strong>Size:</strong> {formatBytes(selectedEntry.size_bytes)}</div>
@@ -160,7 +160,7 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
               {!selectedEntry.is_dir && (
                 <button
                   className="btn btn-primary"
-                  style={{ marginTop: 12 }}
+                  style={{ marginTop: 8 }}
                   onClick={() => alert(`Exporting '${selectedEntry.name}' to local Windows Downloads folder...`)}
                 >
                   <Download size={16} />
@@ -169,7 +169,7 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
               )}
             </div>
           ) : (
-            <div style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
               Select a file or directory from the list to view Ext4 permissions and metadata.
             </div>
           )}

@@ -1,34 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-dark: #060913;
-  --bg-surface: rgba(14, 21, 38, 0.85);
-  --bg-surface-hover: rgba(22, 32, 56, 0.92);
-  --bg-surface-active: rgba(28, 40, 70, 0.98);
+  /* Windows 11 Fluent Design Tokens */
+  --fluent-bg-dark: #0f172a;
+  --fluent-card-bg: #1e293b;
+  --fluent-card-hover: #26334d;
+  --fluent-card-border: #334155;
+  --fluent-card-border-hover: #475569;
 
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-border-hover: rgba(0, 240, 255, 0.5);
-  --glass-glow-cyan: rgba(0, 240, 255, 0.25);
-  --glass-glow-emerald: rgba(0, 255, 170, 0.25);
+  --fluent-accent: #0284c7;
+  --fluent-accent-hover: #0369a1;
+  --fluent-accent-light: #38bdf8;
+  --fluent-accent-subtle: rgba(2, 132, 199, 0.15);
 
-  --neon-cyan: #00f0ff;
-  --neon-cyan-dark: #0088ff;
-  --neon-emerald: #00ffaa;
-  --neon-violet: #a855f7;
-  --neon-amber: #ffb700;
-  --neon-crimson: #ff3366;
+  --fluent-emerald: #10b981;
+  --fluent-emerald-subtle: rgba(16, 185, 129, 0.15);
+  
+  --fluent-amber: #f59e0b;
+  --fluent-amber-subtle: rgba(245, 158, 11, 0.15);
+  
+  --fluent-danger: #dc2626;
+  --fluent-danger-hover: #b91c1c;
 
-  --text-primary: #ffffff;
+  --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
 
-  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 }
 
 * {
@@ -39,46 +42,11 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bg-dark);
+  background-color: var(--fluent-bg-dark);
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-  position: relative;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Ambient Background Lights */
-body::before {
-  content: '';
-  position: fixed;
-  top: -15%;
-  left: 20%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
-  z-index: -2;
-  filter: blur(80px);
-  pointer-events: none;
-  animation: ambient-pulse 12s infinite alternate ease-in-out;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  bottom: -15%;
-  right: 15%;
-  width: 650px;
-  height: 650px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
-  z-index: -2;
-  filter: blur(90px);
-  pointer-events: none;
-  animation: ambient-pulse 16s infinite alternate-reverse ease-in-out;
-}
-
-@keyframes ambient-pulse {
-  0% { transform: scale(1) translate(0, 0); opacity: 0.7; }
-  100% { transform: scale(1.15) translate(40px, -30px); opacity: 1; }
 }
 
 /* Custom Scrollbars */
@@ -87,202 +55,151 @@ body::after {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(6, 9, 19, 0.9);
+  background: #0f172a;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: #334155;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-cyan);
-  box-shadow: 0 0 12px var(--neon-cyan);
+  background: #475569;
 }
 
-/* Glass Panels */
+/* Fluent Card Container */
 .glass-panel {
-  background: var(--bg-surface);
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border: 1px solid var(--glass-border);
+  background: var(--fluent-card-bg);
+  border: 1px solid var(--fluent-card-border);
   border-radius: var(--radius-md);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
 }
 
 .glass-panel:hover {
-  border-color: rgba(255, 255, 255, 0.22);
-  background: var(--bg-surface-hover);
+  border-color: var(--fluent-card-border-hover);
 }
 
 .glass-panel-glow {
-  border-color: var(--glass-border-hover);
-  box-shadow: 0 0 35px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.1);
+  border-color: var(--fluent-accent);
+  box-shadow: 0 0 0 1px var(--fluent-accent), 0 4px 20px rgba(2, 132, 199, 0.25);
 }
 
-/* Typography Helpers */
+/* Mono typography */
 .mono {
   font-family: var(--font-mono);
 }
 
-.text-gradient-cyan {
-  background: linear-gradient(135deg, #ffffff 20%, var(--neon-cyan) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Badges with High Contrast Typography */
+/* Windows 11 Fluent Badges */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 12px;
-  border-radius: 20px;
+  padding: 4px 10px;
+  border-radius: 4px;
   font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .badge-cyan {
-  background: rgba(0, 240, 255, 0.15);
-  color: #00f0ff;
-  border: 1px solid rgba(0, 240, 255, 0.45);
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
-  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+  background: var(--fluent-accent-subtle);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
 }
 
 .badge-emerald {
-  background: rgba(0, 255, 170, 0.15);
-  color: #00ffaa;
-  border: 1px solid rgba(0, 255, 170, 0.45);
-  box-shadow: 0 0 12px rgba(0, 255, 170, 0.25);
-  text-shadow: 0 0 8px rgba(0, 255, 170, 0.4);
+  background: var(--fluent-emerald-subtle);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 .badge-violet {
-  background: rgba(168, 85, 247, 0.18);
+  background: rgba(139, 92, 246, 0.15);
   color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.45);
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
+  border: 1px solid rgba(192, 132, 252, 0.3);
 }
 
 .badge-amber {
-  background: rgba(255, 183, 0, 0.15);
-  color: #ffb700;
-  border: 1px solid rgba(255, 183, 0, 0.45);
-  box-shadow: 0 0 12px rgba(255, 183, 0, 0.25);
+  background: var(--fluent-amber-subtle);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 .badge-crimson {
-  background: rgba(255, 51, 102, 0.18);
-  color: #ff6688;
-  border: 1px solid rgba(255, 51, 102, 0.45);
+  background: rgba(220, 38, 38, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
-/* Pulsing Status Dot */
+/* Status Indicator Dot */
 .pulse-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  position: relative;
   display: inline-block;
 }
 
 .pulse-dot-green {
-  background: var(--neon-emerald);
-  box-shadow: 0 0 8px var(--neon-emerald);
+  background: #10b981;
 }
 
-.pulse-dot-green::after {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2px solid var(--neon-emerald);
-  animation: pulse-ring 1.8s infinite ease-out;
-}
-
-@keyframes pulse-ring {
-  0% { transform: scale(0.6); opacity: 1; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
-/* HIGH-CONTRAST BUTTON SYSTEM */
+/* Fluent Button System */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: var(--radius-sm);
   font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s ease;
   outline: none;
   user-select: none;
 }
 
-/* Primary Button: Vibrant Cyan Gradient with Crisp Dark Text */
+/* Primary Button: Official Windows Corporate Blue */
 .btn-primary {
-  background: linear-gradient(135deg, #00f0ff 0%, #0077ff 100%);
-  color: #020617;
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  box-shadow: 0 4px 18px rgba(0, 240, 255, 0.45);
+  background: var(--fluent-accent);
+  color: #ffffff;
+  border-color: #0369a1;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(0, 240, 255, 0.7);
-  filter: brightness(1.1);
-  color: #000000;
+  background: var(--fluent-accent-hover);
+  border-color: #0284c7;
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  background: #075985;
 }
 
-/* Secondary Button: Solid Deep Slate Container with Pure White Text & Cyan Border */
+/* Secondary Button: Fluent Dark Container with White Text */
 .btn-secondary {
-  background: rgba(22, 32, 54, 0.9);
+  background: #334155;
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: #475569;
 }
 
 .btn-secondary:hover {
-  background: rgba(35, 48, 80, 0.95);
-  border-color: var(--neon-cyan);
-  color: #00f0ff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 240, 255, 0.25);
+  background: #475569;
+  border-color: #64748b;
+  color: #ffffff;
 }
 
-/* Danger Button: High Visibility Pink-Red Container with Pure White Text */
+/* Danger Button: Win11 Solid Crimson */
 .btn-danger {
-  background: rgba(255, 51, 102, 0.2);
-  color: #ff6688;
-  border: 1px solid rgba(255, 51, 102, 0.5);
-  font-weight: 700;
+  background: #991b1b;
+  color: #ffffff;
+  border-color: #b91c1c;
 }
 
 .btn-danger:hover {
-  background: rgba(255, 51, 102, 0.38);
-  color: #ffffff;
-  border-color: #ff3366;
-  box-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
-  transform: translateY(-2px);
+  background: #b91c1c;
+  border-color: #dc2626;
 }
 
 .spin {

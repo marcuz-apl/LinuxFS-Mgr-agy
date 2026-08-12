@@ -48,14 +48,14 @@ export const ImageMountDropzone: React.FC<ImageMountDropzoneProps> = ({ onSelect
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div className="glass-panel" style={{ padding: 24 }}>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 600, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <UploadCloud size={22} color="var(--neon-cyan)" />
+          <UploadCloud size={22} color="var(--fluent-accent-light)" />
           <span>Linux Disk Image Virtual Drive Mount</span>
         </h2>
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 20 }}>
-          Drag & drop any Linux disk image file (<span className="mono" style={{ color: 'var(--neon-cyan)' }}>.img, .ext4, .iso, .vhdx, .vhd, .qcow2</span>) to attach and map as a native Windows Drive Letter.
+          Drag & drop any Linux disk image file (<span className="mono" style={{ color: 'var(--fluent-accent-light)' }}>.img, .ext4, .iso, .vhdx, .vhd, .qcow2</span>) to attach and map as a native Windows Drive Letter.
         </p>
 
         <div
@@ -65,7 +65,7 @@ export const ImageMountDropzone: React.FC<ImageMountDropzoneProps> = ({ onSelect
           onDragOver={handleDrag}
           onDrop={handleDrop}
         >
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(0,240,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--neon-cyan)' }}>
+          <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--fluent-accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--fluent-accent-light)' }}>
             <FileCode2 size={32} />
           </div>
 
@@ -92,9 +92,9 @@ export const ImageMountDropzone: React.FC<ImageMountDropzoneProps> = ({ onSelect
         </div>
 
         {selectedFile && (
-          <div className="glass-panel-glow" style={{ marginTop: 20, padding: 20, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(0, 240, 255, 0.04)' }}>
+          <div style={{ marginTop: 20, padding: 18, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--fluent-accent-subtle)', border: '1px solid var(--fluent-accent)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <Disc size={28} color="var(--neon-cyan)" />
+              <Disc size={28} color="var(--fluent-accent-light)" />
               <div>
                 <div style={{ fontWeight: 600, fontSize: '1rem' }}>{selectedFile.name}</div>
                 <div className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -116,19 +116,18 @@ export const ImageMountDropzone: React.FC<ImageMountDropzoneProps> = ({ onSelect
 
       {/* Preset Sample Images for Quick Testing */}
       <div className="glass-panel" style={{ padding: 24 }}>
-        <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: 16, color: 'var(--text-main)' }}>
+        <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: 16, color: 'var(--text-secondary)' }}>
           Sample Linux Image Quick Mount Presets
         </h3>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
           {sampleImages.map((img) => (
             <div
               key={img.name}
-              className="glass-panel"
-              style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, background: 'rgba(255,255,255,0.02)' }}
+              style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, background: '#0f172a', border: '1px solid var(--fluent-card-border)', borderRadius: 6 }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Disc size={20} color="var(--neon-green)" />
+                <Disc size={20} color="var(--fluent-emerald)" />
                 <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{img.name}</span>
               </div>
               <div className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
