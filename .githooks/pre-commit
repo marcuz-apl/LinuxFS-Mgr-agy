@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -e
+
+if [ -f ".githooks/versioning.sh" ]; then
+    sh .githooks/versioning.sh
+fi

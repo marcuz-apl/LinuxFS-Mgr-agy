@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+if [ -z "$COMMIT_SOURCE" ] || [ "$COMMIT_SOURCE" = "message" ]; then
+    VERSION_STR="1.0.0"
+    if [ -f "VERSION" ]; then
+        VERSION_STR=$(cat VERSION | tr -d '\r\n')
+    fi
+    TIMESTAMP=$(date +'%Y-%m-%d-%H%M')
+    PREFIX="v${VERSION_STR} build ${TIMESTAMP} "
+    
+    EXISTING_MSG=$(cat "$COMMIT_MSG_FILE")
+    case "$EXISTING_MSG" in
+        v[0-9]*\ build\ *) ;;
+        *) echo "${PREFIX}${EXISTING_MSG}" > "$COMMIT_MSG_FILE" ;;
+    esac
+fi
