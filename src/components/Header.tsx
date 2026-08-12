@@ -1,6 +1,7 @@
 import React from 'react';
 import { HardDrive, ShieldCheck, ShieldAlert, RefreshCw, Cpu } from 'lucide-react';
 import { SystemScanResult } from '../types/disk';
+import { ThemeToggle } from './ThemeToggle';
 import packageJson from '../../package.json';
 
 interface HeaderProps {
@@ -10,7 +11,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ scanResult, onRefresh, isScanning }) => {
-  const currentVersion = packageJson.version || '1.1.2';
+  const currentVersion = packageJson.version || '1.1.4';
 
   return (
     <header className="glass-panel app-header">
@@ -51,6 +52,8 @@ export const Header: React.FC<HeaderProps> = ({ scanResult, onRefresh, isScannin
           <RefreshCw size={14} className={isScanning ? 'spin' : ''} />
           <span>{isScanning ? 'Scanning...' : 'Rescan'}</span>
         </button>
+
+        <ThemeToggle />
 
         <div className="badge badge-violet mono">v{currentVersion}</div>
       </div>
