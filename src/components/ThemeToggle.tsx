@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
-import { getCalculatedTheme } from '../lib/themeHelper';
 
 export const ThemeToggle: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
@@ -16,30 +15,76 @@ export const ThemeToggle: React.FC = () => {
   useEffect(() => {
     setMounted(true);
     const stored = localStorage.getItem('linuxfs-theme');
-    const initial = stored ? (stored as 'light' | 'dark') : getCalculatedTheme();
+    const initial = stored === 'light' || stored === 'dark' ? stored : 'dark';
     setTheme(initial);
     applyThemeToDOM(initial);
   }, []);
 
-  const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-    applyThemeToDOM(nextTheme);
-    localStorage.setItem('linuxfs-theme', nextTheme);
+  const selectTheme = (targetTheme: 'light' | 'dark') => {
+    setTheme(targetTheme);
+    applyThemeToDOM(targetTheme);
+    localStorage.setItem('linuxfs-theme', targetTheme);
   };
 
   if (!mounted) return null;
 
   return (
-    <button
-      onClick={toggleTheme}
-      className="btn btn-secondary"
-      style={{ padding: '7px 12px', gap: 6 }}
-      title={`Current: ${theme.toUpperCase()} mode. Click to toggle.`}
-      aria-label="Toggle light/dark theme"
+    <div
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        background: 'var(--bg-inset)',
+        padding: '3px',
+        borderRadius: '6px',
+        border: '1px solid var(--border)',
+        gap: '2px',
+      }}
     >
-      {theme === 'dark' ? <Sun size={15} color="#f59e0b" /> : <Moon size={15} color="#0284c7" />}
-      <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>{theme === 'dark' ? 'Dark' : 'Light'} Mode</span>
-    </button>
+      <button
+        onClick={() => selectTheme('light')}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '5px',
+          padding: '4px 10px',
+          borderRadius: '4px',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: '0.78rem',
+          fontWeight: 700,
+          fontFamily: 'var(--font-sans)',
+          background: theme === 'light' ? 'var(--accent)' : 'transparent',
+          color: theme === 'light' ? '#ffffff' : 'var(--text-muted)',
+          transition: 'all 0.15s ease',
+        }}
+        title="Switch to Light Theme"
+      >
+        <Sun size={13} />
+        <span>Light</span>
+      </button>
+
+      <button
+        onClick={() => selectTheme('dark')}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '5px',
+          padding: '4px 10px',
+          borderRadius: '4px',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: '0.78rem',
+          fontWeight: 700,
+          fontFamily: 'var(--font-sans)',
+          background: theme === 'dark' ? 'var(--accent)' : 'transparent',
+          color: theme === 'dark' ? '#ffffff' : 'var(--text-muted)',
+          transition: 'all 0.15s ease',
+        }}
+        title="Switch to Dark Theme"
+      >
+        <Moon size={13} />
+        <span>Dark</span>
+      </button>
+    </div>
   );
 };

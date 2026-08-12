@@ -1,6 +1,6 @@
 [package]
 name = "linuxfs-mgr"
-version = "1.1.5"
+version = "1.1.6"
 description = "LinuxFS Manager - Ext4 Partition & Image Mounting Utility"
 authors = ["Alfazen Inc."]
 edition = "2021"
