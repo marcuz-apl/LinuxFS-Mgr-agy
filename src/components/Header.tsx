@@ -12,31 +12,32 @@ export const Header: React.FC<HeaderProps> = ({ scanResult, onRefresh, isScannin
   return (
     <header className="glass-panel app-header">
       <div className="header-brand">
-        <div className="brand-icon">
-          <HardDrive size={24} />
+        <div className="brand-logo-container">
+          <HardDrive size={26} />
         </div>
         <div>
-          <h1 className="brand-title">LinuxFS Manager</h1>
-          <p className="brand-subtitle">Ext4 Partition Inspector & Image Mount Utility</p>
+          <h1 className="brand-title text-gradient-cyan">LinuxFS Manager</h1>
+          <p className="brand-subtitle">Ext4 Partition Inspector & Virtual Drive Mount Engine</p>
         </div>
       </div>
 
       <div className="header-meta">
         {scanResult?.is_admin ? (
-          <div className="badge badge-green" title="Administrator rights active - Full raw disk access enabled">
+          <div className="badge badge-emerald" title="Windows Administrator Execution Level Active">
             <ShieldCheck size={14} />
-            <span>Admin Active</span>
+            <span>Admin Privileges Active</span>
           </div>
         ) : (
-          <div className="badge badge-amber" title="Limited privileges - UAC Administrator rights recommended">
+          <div className="badge badge-amber" title="Standard User Execution Level">
             <ShieldAlert size={14} />
-            <span>Standard User</span>
+            <span>Standard User Mode</span>
           </div>
         )}
 
-        <div className="badge badge-cyan" title="Mount Engine Status">
+        <div className="badge badge-cyan" style={{ gap: 8 }}>
+          <span className="pulse-dot pulse-dot-green"></span>
           <Cpu size={14} />
-          <span>WSL2 / WinFSP Ready</span>
+          <span>WSL2 & WinFSP Ready</span>
         </div>
 
         <button 
@@ -44,11 +45,11 @@ export const Header: React.FC<HeaderProps> = ({ scanResult, onRefresh, isScannin
           onClick={onRefresh}
           disabled={isScanning}
         >
-          <RefreshCw size={16} className={isScanning ? 'spin' : ''} />
-          <span>{isScanning ? 'Scanning...' : 'Rescan Drives'}</span>
+          <RefreshCw size={15} className={isScanning ? 'spin' : ''} />
+          <span>{isScanning ? 'Scanning...' : 'Rescan System'}</span>
         </button>
 
-        <div className="badge badge-purple mono">v1.0.2</div>
+        <div className="badge badge-violet mono" style={{ padding: '6px 12px' }}>v1.0.5</div>
       </div>
     </header>
   );
