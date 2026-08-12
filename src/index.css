@@ -1,4 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('./assets/fonts/Inter-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('./assets/fonts/FiraCode-Light.woff2') format('woff2');
+}
 
 /* ============================================================
    DARK THEME (default) — Windows 11 Fluent Dark
@@ -36,8 +50,8 @@
   --btn-secondary-border: #475569;
   --btn-secondary-hover-bg: #3d4f65;
 
-  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'FiraCode Nerd Font', 'FiraCode NFM', 'JetBrainsMono Nerd Font', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'FiraCode Nerd Font Mono', 'FiraCode NF', 'JetBrainsMono Nerd Font Mono', 'Fira Code', 'JetBrains Mono', monospace;
 
   --radius-sm: 6px;
   --radius-md: 8px;
