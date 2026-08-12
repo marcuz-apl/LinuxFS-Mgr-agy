@@ -29,5 +29,22 @@ fi
 
 NEW_VERSION="${m}.${n}.${p}"
 echo "$NEW_VERSION" > "$VERSION_FILE"
+
+# Sync version to package.json, Cargo.toml, and tauri.conf.json
+if [ -f "package.json" ]; then
+    sed -i -E "s/\"version\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"version\": \"${NEW_VERSION}\"/" package.json
+    git add package.json
+fi
+
+if [ -f "src-tauri/Cargo.toml" ]; then
+    sed -i -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+\"/version = \"${NEW_VERSION}\"/" src-tauri/Cargo.toml
+    git add src-tauri/Cargo.toml
+fi
+
+if [ -f "src-tauri/tauri.conf.json" ]; then
+    sed -i -E "s/\"version\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"version\": \"${NEW_VERSION}\"/" src-tauri/tauri.conf.json
+    git add src-tauri/tauri.conf.json
+fi
+
 git add "$VERSION_FILE"
-echo "Alfazen Versioning: Bumped VERSION to $NEW_VERSION"
+echo "Alfazen Versioning: Bumped VERSION to $NEW_VERSION across all project manifests"
