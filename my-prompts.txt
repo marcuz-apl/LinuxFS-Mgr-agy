@@ -1,0 +1,10 @@
+Here are the Function Glitches:
+1- There are 4 physical drives on my PC (Toshiba SATA HDD), each being 1.82 TB; but you detected them as below:
+- Drive 0: NVMe Samsung SSD 980 PRO 1TB (Wrong)
+- Drive 1: WDC WD40EZAZ-00SF3B0 3.64 TB (Wrong)
+- Drive 2: ST2000DM008-2FR102 1.82TB (Wrong)
+- Drive 3: TOSHIBA DT01ACA200 1.82TB (Correct)
+I have attached 6 pictures in ./public/hdd-info/ folder, please take a look at those 4 Drives and 2 EXT4 partitions.
+2. No response when clicking that button of "Browse Image Files". a few default images where presented by default in folder of "C:\LinuxFS", which doesn't exist at all. Please fix this.
+3. Whatever I mount ant EXT4 partitions, the drive Z or Y never shows up in FIle Browser.
+4. The Header area is poorly managed: they are alligned left, sometimes become center-alligned, please fix this.
