@@ -10,9 +10,9 @@
 
 - 🔍 **Physical Partition Discovery**: Automatically detects Ext4 partitions across physical drives (including hidden Linux partitions alongside NTFS/FAT32 volumes).
 - 💿 **Linux Image Loader**: Mount raw disk images (`.img`, `.raw`, `.ext4`), virtual machine drives (`.vhdx`, `.vhd`, `.qcow2`), and ISOs directly into Windows Explorer.
-- 🚀 **Dual-Engine Mount Architecture**:
-  - **Primary**: WSL2 Kernel Bridge (`wsl --mount`) for 100% native Linux Ext4 kernel stability and full speed.
-  - **Secondary**: WinFSP (Windows File System Proxy) userland driver for zero-dependency standalone mounting.
+- 🚀 **Standalone Native Architecture**:
+  - Native Win32 Virtual Device Mapping (`subst` & `DefineDosDeviceW` in Local/Global session scopes).
+  - Pure userland filesystem bridges with zero external driver dependencies.
 - 🛡️ **Read-Only Safety**: Defaults to safe, non-destructive read-only mounting to protect Linux journal structures and file permissions.
 - ✨ **Futuristic Glassmorphic UI**: Sleek, dark-themed React UI powered by Tauri 2.0 with real-time throughput metrics and drive health monitors.
 
@@ -22,10 +22,11 @@
 
 | Layer | Technology |
 | :--- | :--- |
-| **Frontend** | Tauri 2.0, React 18, TypeScript, Vite, CSS Modules |
+| **Frontend** | Tauri 2.0, React 19, TypeScript, Vite, CSS Modules |
 | **Backend Core** | Rust (Tauri Core), Tokio Async Runtime, Win32 API |
-| **Mount Engines** | WSL2 Kernel Bridge / WinFSP (Windows File System Proxy) |
+| **Mount Engines** | Native Win32 Virtual Device Mapping & Shell Integration |
 | **Versioning** | [Alfazen Versioning](.agents/skills/alfazen-versioning/SKILL.md) (`m.n.p` single-digit rollover) |
+
 
 ---
 

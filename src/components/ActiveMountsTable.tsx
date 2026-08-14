@@ -1,13 +1,20 @@
 import React from 'react';
-import { HardDrive, Eject, ShieldCheck, Activity, Cpu } from 'lucide-react';
+import { HardDrive, Eject, ShieldCheck, Activity, Cpu, FolderOpen, Layers } from 'lucide-react';
 import { MountRecord } from '../types/disk';
 
 interface ActiveMountsTableProps {
   mounts: MountRecord[];
   onUnmount: (mount: MountRecord) => void;
+  onOpenExplorer?: (mount: MountRecord) => void;
+  onBrowseExt4?: (mount: MountRecord) => void;
 }
 
-export const ActiveMountsTable: React.FC<ActiveMountsTableProps> = ({ mounts, onUnmount }) => {
+export const ActiveMountsTable: React.FC<ActiveMountsTableProps> = ({
+  mounts,
+  onUnmount,
+  onOpenExplorer,
+  onBrowseExt4,
+}) => {
   const formatBytes = (bytes: number) => {
     const mb = bytes / (1024 * 1024);
     return mb >= 1024 ? `${(mb / 1024).toFixed(2)} GB` : `${mb.toFixed(2)} MB`;
@@ -22,7 +29,7 @@ export const ActiveMountsTable: React.FC<ActiveMountsTableProps> = ({ mounts, on
             <span>Active Virtual Drives & Mounted Volumes</span>
           </h2>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: 2 }}>
-            Real-time Windows Drive Letter mapping and filesystem status
+            Real-time Windows Drive Letter mapping, File Explorer integration, and Ext4 filesystem status
           </p>
         </div>
         <div className="badge badge-emerald">{mounts.length} Active Mount(s)</div>
@@ -80,9 +87,35 @@ export const ActiveMountsTable: React.FC<ActiveMountsTableProps> = ({ mounts, on
                     <span style={{ color: 'var(--accent-light)', marginLeft: 8 }}>↑ {formatBytes(m.bytes_written)}</span>
                   </td>
                   <td style={{ padding: '12px 14px', textAlign: 'right', borderTopRightRadius: 6, borderBottomRightRadius: 6 }}>
-                    <button className="btn btn-danger" style={{ padding: '5px 10px', fontSize: '0.78rem' }} onClick={() => onUnmount(m)}>
-                      <Eject size={13} /><span>Unmount</span>
-                    </button>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 6 }}>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ padding: '5px 9px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 5 }}
+                        title="Open in Windows File Explorer"
+                        onClick={() => onOpenExplorer && onOpenExplorer(m)}
+                      >
+                        <FolderOpen size={13} color="var(--accent-light)" />
+                        <span>Explorer</span>
+                      </button>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ padding: '5px 9px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 5 }}
+                        title="Browse files inside LinuxFS Manager"
+                        onClick={() => onBrowseExt4 && onBrowseExt4(m)}
+                      >
+                        <Layers size={13} color="var(--emerald)" />
+                        <span>Browse</span>
+                      </button>
+                      <button
+                        className="btn btn-danger"
+                        style={{ padding: '5px 9px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 5 }}
+                        title="Safely unmount and flush buffers"
+                        onClick={() => onUnmount(m)}
+                      >
+                        <Eject size={13} />
+                        <span>Unmount</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -93,3 +126,4 @@ export const ActiveMountsTable: React.FC<ActiveMountsTableProps> = ({ mounts, on
     </div>
   );
 };
+

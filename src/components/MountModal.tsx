@@ -69,9 +69,10 @@ export const MountModal: React.FC<MountModalProps> = ({ title, sourceDescription
             Mount Engine Architecture:
           </label>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {engineCard('NATIVE', 'Native Win32 Virtual Bridge', 'Direct local Windows filesystem bridge (Zero WSL required)', <Cpu size={15} />)}
+            {engineCard('NATIVE', 'Native Win32 Virtual Bridge', 'Direct local Windows filesystem bridge (Standalone Zero-Dependency)', <Cpu size={15} />)}
             {engineCard('WinFSP', 'WinFSP Userland Proxy', 'Userland file system proxy, fully standalone', <HardDrive size={15} />)}
           </div>
+
         </div>
 
         {/* Read-Only Switch */}

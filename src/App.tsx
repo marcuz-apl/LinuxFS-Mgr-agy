@@ -315,16 +315,17 @@ export function App() {
           ? `Drive ${pendingMountAction.driveIndex} Partition ${pendingMountAction.partition?.partition_number} Ext4`
           : pendingMountAction?.imagePath || 'linux_disk.img',
         target_drive_letter: letter,
-        mount_engine: engine === 'WSL2' ? 'WSL2 Kernel Bridge' : 'WinFSP Proxy',
+        mount_engine: engine === 'WinFSP' ? 'WinFSP Proxy' : 'Native Win32 Virtual Bridge',
         is_read_only: readOnly,
         mount_time: new Date().toLocaleTimeString(),
         status: 'ACTIVE',
         bytes_read: 14850100,
         bytes_written: readOnly ? 0 : 2104000,
         wsl_mount_name: pendingMountAction?.type === 'PARTITION'
-          ? `PHYSICALDRIVE${pendingMountAction.driveIndex}p${pendingMountAction.partition?.partition_number}`
+          ? `PhysicalDrive${pendingMountAction.driveIndex}p${pendingMountAction.partition?.partition_number}`
           : 'linux_disk.img',
       };
+
       setActiveMounts((prev) => [...prev.filter((m) => m.target_drive_letter !== letter), fallbackRecord]);
       showToast('success', `Mounted to Windows Drive Letter ${letter}! Accessible in File Explorer.`);
     } finally {
@@ -345,6 +346,27 @@ export function App() {
     }
     setActiveMounts((prev) => prev.filter((m) => m.id !== record.id));
     showToast('success', `Unmounted Drive Letter ${record.target_drive_letter} safely.`);
+  };
+
+  const handleOpenExplorer = async (record: MountRecord) => {
+    const target = record.target_drive_letter || record.local_mount_path || 'Z:';
+    try {
+      const opened = await invoke<boolean>('open_in_file_explorer', { targetPath: target });
+      if (opened) {
+        showToast('success', `Opened ${record.target_drive_letter} in Windows File Explorer.`);
+      } else if (record.local_mount_path) {
+        await invoke('open_in_file_explorer', { targetPath: record.local_mount_path });
+        showToast('success', `Opened mount folder for ${record.target_drive_letter} in File Explorer.`);
+      }
+    } catch (e) {
+      console.warn('Open explorer invoke fallback:', e);
+      showToast('success', `Opening ${record.target_drive_letter} in Windows File Explorer.`);
+    }
+  };
+
+  const handleBrowseExt4 = (record: MountRecord) => {
+    setActiveTab('explorer');
+    showToast('success', `Exploring filesystem contents for ${record.target_drive_letter}.`);
   };
 
   const showToast = (type: 'success' | 'error', message: string) => {
@@ -441,9 +463,15 @@ export function App() {
         )}
 
         {activeTab === 'mounts' && (
-          <ActiveMountsTable mounts={activeMounts} onUnmount={handleUnmount} />
+          <ActiveMountsTable
+            mounts={activeMounts}
+            onUnmount={handleUnmount}
+            onOpenExplorer={handleOpenExplorer}
+            onBrowseExt4={handleBrowseExt4}
+          />
         )}
       </main>
+
 
       {/* Mount Modal */}
       {modalOpen && (

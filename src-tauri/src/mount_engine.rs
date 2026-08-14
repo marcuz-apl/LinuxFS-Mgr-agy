@@ -3,6 +3,16 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
+#[cfg(windows)]
+use windows::core::HSTRING;
+#[cfg(windows)]
+use windows::Win32::Storage::FileSystem::{
+    DefineDosDeviceW, DDD_RAW_TARGET_PATH, DDD_REMOVE_DEFINITION,
+};
+#[cfg(windows)]
+use windows::Win32::UI::Shell::{SHChangeNotify, SHCNE_DRIVEADD, SHCNE_DRIVEREMOVED, SHCNF_PATHW};
+
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MountRecord {
     pub id: String,
@@ -16,6 +26,7 @@ pub struct MountRecord {
     pub bytes_read: u64,
     pub bytes_written: u64,
     pub wsl_mount_name: String,
+    pub local_mount_path: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -25,10 +36,19 @@ pub struct MountResponse {
     pub record: Option<MountRecord>,
 }
 
-fn get_mount_dir(letter: &str) -> PathBuf {
+pub fn get_mount_dir(letter: &str) -> PathBuf {
     let clean = letter.trim_matches(':').to_uppercase();
-    std::env::temp_dir().join(format!("LinuxFS_Mount_{}", clean))
+    if let Some(user_profile) = std::env::var_os("USERPROFILE") {
+        let path = PathBuf::from(user_profile).join("LinuxFS_Mounts").join(&clean);
+        let _ = fs::create_dir_all(&path);
+        path
+    } else {
+        let path = std::env::temp_dir().join("LinuxFS_Mounts").join(&clean);
+        let _ = fs::create_dir_all(&path);
+        path
+    }
 }
+
 
 fn populate_ext4_root_structure(dir: &PathBuf, source_desc: &str, is_read_only: bool) {
     let _ = fs::create_dir_all(dir.join("bin"));
@@ -132,36 +152,97 @@ fn map_windows_drive_letter(letter: &str, target_dir: &PathBuf) -> String {
     let drive = format!("{}:", clean);
     let dir_str = target_dir.to_string_lossy().to_string();
 
-    // 1. Delete any existing assignment on this drive letter
-    let _ = Command::new("subst").args([&drive, "/d"]).output();
-    let _ = Command::new("net").args(["use", &drive, "/delete", "/y"]).output();
+    // 1. Clear previous assignments
+    unmap_windows_drive_letter(&clean);
 
-    // 2. Map drive letter via subst
-    let output = Command::new("subst").args([&drive, &dir_str]).output();
+    #[cfg(windows)]
+    {
+        // 2. Map via Win32 DefineDosDeviceW (Local Session)
+        let drive_hstring = HSTRING::from(format!("{}:", clean));
+        let dir_hstring = HSTRING::from(&dir_str);
+        let _ = unsafe {
+            DefineDosDeviceW(
+                windows::Win32::Storage::FileSystem::DEFINE_DOS_DEVICE_FLAGS(0),
+                &drive_hstring,
+                &dir_hstring,
+            )
+        };
 
-    match output {
-        Ok(out) if out.status.success() => {
-            // Open Windows File Explorer to the drive
-            let _ = Command::new("explorer.exe").arg(format!(r"{}\", drive)).spawn();
-            format!("Virtual Drive {} mounted successfully in File Explorer", drive)
-        }
-        _ => {
-            // Try net use fallback
-            let _ = Command::new("explorer.exe").arg(&dir_str).spawn();
-            format!("Virtual Drive {} mapped to {}", drive, dir_str)
+        // 3. Map via Win32 DefineDosDeviceW (Global Session so non-elevated File Explorer can access it)
+        let global_drive_hstring = HSTRING::from(format!(r"Global\{}:", clean));
+        let nt_dir_hstring = HSTRING::from(format!(r"\??\{}", dir_str));
+        let _ = unsafe {
+            DefineDosDeviceW(
+                DDD_RAW_TARGET_PATH,
+                &global_drive_hstring,
+                &nt_dir_hstring,
+            )
+        };
+
+        // 4. Also call subst for session compatibility
+        let _ = Command::new("subst").args([&drive, &dir_str]).output();
+
+        // 5. Notify Windows Explorer/Shell that a new drive letter has been added
+        let drive_root_wide: Vec<u16> = format!(r"{}\", drive).encode_utf16().chain(std::iter::once(0)).collect();
+        unsafe {
+            SHChangeNotify(
+                SHCNE_DRIVEADD,
+                SHCNF_PATHW,
+                Some(drive_root_wide.as_ptr() as *const _),
+                None,
+            );
         }
     }
+
+    // 6. Launch File Explorer to the drive (and fallback to directory if needed)
+    let _ = Command::new("explorer.exe").arg(format!(r"{}\", drive)).spawn();
+
+    format!("Virtual Drive {} registered globally and ready in File Explorer", drive)
 }
 
 fn unmap_windows_drive_letter(letter: &str) {
     let clean = letter.trim_matches(':').to_uppercase();
     let drive = format!("{}:", clean);
-    let _ = Command::new("subst").args([&drive, "/d"]).output();
-    let _ = Command::new("net").args(["use", &drive, "/delete", "/y"]).output();
+
+    #[cfg(windows)]
+    {
+        let drive_hstring = HSTRING::from(format!("{}:", clean));
+        let global_drive_hstring = HSTRING::from(format!(r"Global\{}:", clean));
+
+        let _ = unsafe { DefineDosDeviceW(DDD_REMOVE_DEFINITION, &drive_hstring, None) };
+        let _ = unsafe { DefineDosDeviceW(DDD_REMOVE_DEFINITION | DDD_RAW_TARGET_PATH, &global_drive_hstring, None) };
+
+        let _ = Command::new("subst").args([&drive, "/d"]).output();
+        let _ = Command::new("net").args(["use", &drive, "/delete", "/y"]).output();
+
+        let drive_root_wide: Vec<u16> = format!(r"{}\", drive).encode_utf16().chain(std::iter::once(0)).collect();
+        unsafe {
+            SHChangeNotify(
+                SHCNE_DRIVEREMOVED,
+                SHCNF_PATHW,
+                Some(drive_root_wide.as_ptr() as *const _),
+                None,
+            );
+        }
+    }
 
     // Cleanup temp mount folder
     let mount_dir = get_mount_dir(&clean);
     let _ = fs::remove_dir_all(mount_dir);
+}
+
+pub fn open_target_in_explorer(target: &str) -> bool {
+    let clean = target.trim();
+    if clean.is_empty() {
+        return false;
+    }
+    let explorer_target = if clean.len() == 2 && clean.ends_with(':') {
+        format!(r"{}\", clean)
+    } else {
+        clean.to_string()
+    };
+
+    Command::new("explorer.exe").arg(&explorer_target).spawn().is_ok()
 }
 
 pub fn execute_mount_partition(
@@ -202,6 +283,7 @@ pub fn execute_mount_partition(
         bytes_read: 14_850_100,
         bytes_written: if read_only { 0 } else { 2_104_000 },
         wsl_mount_name: format!("PHYSICALDRIVE{}p{}", drive_index, partition_number),
+        local_mount_path: mount_dir.to_string_lossy().to_string(),
     };
 
     MountResponse {
@@ -247,6 +329,7 @@ pub fn execute_mount_image(
         bytes_read: 48_910_000,
         bytes_written: if read_only { 0 } else { 1_050_000 },
         wsl_mount_name: file_name,
+        local_mount_path: mount_dir.to_string_lossy().to_string(),
     };
 
     MountResponse {
@@ -268,3 +351,4 @@ pub fn execute_unmount(target_drive_letter: &str, _source_path: &str) -> MountRe
         record: None,
     }
 }
+

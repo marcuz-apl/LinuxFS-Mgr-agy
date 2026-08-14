@@ -36,6 +36,11 @@ fn browse_ext4_path(target_path: String) -> Ext4DirectoryResponse {
     ext4_explorer::get_ext4_directory_contents(&target_path)
 }
 
+#[tauri::command]
+fn open_in_file_explorer(target_path: String) -> bool {
+    mount_engine::open_target_in_explorer(&target_path)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -45,8 +50,10 @@ pub fn run() {
             mount_partition,
             mount_image,
             unmount_drive,
-            browse_ext4_path
+            browse_ext4_path,
+            open_in_file_explorer
         ])
         .run(tauri::generate_context!())
         .expect("error while running LinuxFS Manager tauri application");
 }
+

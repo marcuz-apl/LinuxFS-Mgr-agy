@@ -49,7 +49,9 @@ export interface MountRecord {
   bytes_read: number;
   bytes_written: number;
   wsl_mount_name: string;
+  local_mount_path?: string;
 }
+
 
 export interface MountResponse {
   success: boolean;

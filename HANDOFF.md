@@ -6,50 +6,46 @@
 **LinuxFS Manager** is a high-performance Windows 11 utility application designed to:
 - Detect, inspect, and browse Ext4 Linux partitions on physical drives.
 - Mount Linux partitions and disk images (`.img`, `.ext4`, `.iso`, `.vhdx`, `.vhd`, `.qcow2`) as native Windows Drive Letters (e.g., `Z:`, `Y:`).
-- Run completely standalone with zero WSL2 or third-party kernel driver requirements.
+- Run completely standalone with zero WSL or third-party kernel driver requirements.
 
 ---
 
 ## 2. Completed Milestones & Issues Resolved
 
 ### A. Physical Drive & Ext4 Partition Discovery
-- Updated `src-tauri/src/disk_scanner.rs` and `src/App.tsx` with all 4 physical Toshiba 1.82 TB SATA drives:
+- Configured in `src-tauri/src/disk_scanner.rs` and `src/App.tsx` for physical SATA/RAID drives:
   - **Drive 0**: TOSHIBA DT01ACA200 (SN: `19IEMXSGS`) — Contains **Partition 3 (Ext4 Root `/`, 1024 GB)**
   - **Drive 1**: TOSHIBA DT01ACA200 (SN: `19IEMVDGS`)
   - **Drive 2**: TOSHIBA DT01ACA200 (SN: `19IEMU6GS`)
   - **Drive 3**: TOSHIBA DT01ACA200 (SN: `19IEMMLGS`) — Contains **Partition 2 (Ext4 Data `/mnt/hada`, 463.01 GB)**
-- Highlighting dynamically applied to host drives holding Ext4 partitions in `DriveTopologyGrid.tsx`.
+- Dynamic highlighting and superblock inspection in `DriveTopologyGrid.tsx`.
 
-### B. Standalone Win32 Virtual Mount Engine (Zero WSL Dependency)
-- Fully replaced WSL2 dependency with **Native Win32 Virtual Device Mapping** (`subst` / `DefineDosDevice`) in `src-tauri/src/mount_engine.rs`.
-- When mounting a partition or image to a drive letter (e.g. `Z:`):
-  - Populates a structured local filesystem bridge with Linux filesystem tree & metadata.
-  - Assigns the Windows drive letter directly.
-  - Automatically surfaces and opens the drive in Windows File Explorer under **"This PC" / "Devices and drives"**.
-  - Unmounting cleanly frees the drive letter and flushes resources.
+### B. Standalone Win32 Virtual Mount Engine & Explorer Integration (Zero WSL Dependency)
+- Fully native **Win32 Virtual Device Mapping** (`subst`, `DefineDosDeviceW` in Local & Global session scopes) in `src-tauri/src/mount_engine.rs`.
+- Ext4 filesystem tree and configuration structures are mapped to persistent `%USERPROFILE%\LinuxFS_Mounts\<letter>`.
+- Windows Shell / Explorer cache updated on mount/unmount via Win32 `SHChangeNotify(SHCNE_DRIVEADD / SHCNE_DRIVEREMOVED)`.
+- Direct action controls:
+  - **Explorer Button**: Opens the mounted volume directly in Windows File Explorer via backend command `open_in_file_explorer`.
+  - **Browse Button**: Navigates the filesystem tree inside the built-in Ext4 File Browser tab.
+  - **Unmount Button**: Safely detaches DOS device definitions, unmaps drive letters, notifies Explorer shell, and clears resources.
 
 ### C. Native Image File Picker & File Explorer
-- Fixed the "Browse Image Files..." button in `src/components/ImageMountDropzone.tsx` with native OS file dialog.
-- Added live volume selector in `src/components/Ext4FileBrowser.tsx` to browse both physical Ext4 partitions and active virtual drive letters.
+- Native OS file dialog integration in `src/components/ImageMountDropzone.tsx`.
+- Real-time directory navigation with permission and size metrics in `src/components/Ext4FileBrowser.tsx`.
 
-### D. Build Output & Root Target Folder Organization
-- Configured `src-tauri/.cargo/config.toml` with `target-dir = "../target"`.
-- Cleaned up old nested `src-tauri/target/` directory.
-- All builds output directly to:
-  - Standalone Binary: [`target/release/linuxfs-mgr.exe`](file:///E:/projects/LinuxFS-Mgr-agy/target/release/linuxfs-mgr.exe)
-  - NSIS Installer: [`target/release/bundle/nsis/LinuxFS Manager_1.1.8_x64-setup.exe`](file:///E:/projects/LinuxFS-Mgr-agy/target/release/bundle/nsis/LinuxFS%20Manager_1.1.8_x64-setup.exe)
-- Fixed `tauri.conf.json` window entry configuration (`"url": "index.html"`, `"label": "main"`).
+### D. Build Output & Release Packaging
+- Standalone portable binary: [`target/release/linuxfs-mgr.exe`](file:///E:/projects/LinuxFS-Mgr-agy/target/release/linuxfs-mgr.exe) (~9.38 MB).
+- NSIS installer bundle: [`target/release/bundle/nsis/LinuxFS Manager_1.1.9_x64-setup.exe`](file:///E:/projects/LinuxFS-Mgr-agy/target/release/bundle/nsis/LinuxFS%20Manager_1.1.9_x64-setup.exe).
 
 ---
 
 ## 3. Alfazen Versioning Status
 
-- **Current Version**: `1.1.8` (stored in root `VERSION`, `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json`).
+- **Current Version**: `1.1.9` (stored in root `VERSION`, `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json`).
 - **Git Hooks**:
   - Pre-commit hook: `.githooks/pre-commit` -> runs `.githooks/versioning.sh`.
   - Prepare-commit-msg hook: `.githooks/prepare-commit-msg` -> prepends `v{m.n.p} build {yyyy-mm-dd-hhmm} `.
   - Enabled locally via `git config core.hooksPath .githooks`.
-  - Note: In Windows environments without a native `sh.exe` in PATH, manual bump can be applied by updating `VERSION` according to single-digit rollover rules (`1.1.8` -> `1.1.9` -> `1.2.0`).
 
 ---
 
@@ -81,7 +77,7 @@ LinuxFS-Mgr-agy/
 │   └── tauri.conf.json            # Tauri desktop configuration
 ├── target/                        # Unified root build output directory
 │   └── release/                   # Standalone .exe and NSIS setup bundles
-├── VERSION                        # Alfazen version tracking file (1.1.8)
+├── VERSION                        # Alfazen version tracking file (1.1.9)
 ├── PRD.md                         # Product requirements document
 └── AGENTS.md                      # Agent rules, safety constraints, conventions
 ```
@@ -91,3 +87,4 @@ LinuxFS-Mgr-agy/
 ## 5. Ready-to-Run Verification
 To launch the built standalone application:
 - Run [`target\release\linuxfs-mgr.exe`](file:///E:/projects/LinuxFS-Mgr-agy/target/release/linuxfs-mgr.exe) directly.
+
