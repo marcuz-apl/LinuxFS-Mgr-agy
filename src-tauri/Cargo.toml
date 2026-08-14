@@ -1,6 +1,6 @@
 [package]
 name = "linuxfs-mgr"
-version = "1.1.8"
+version = "1.1.9"
 description = "LinuxFS Manager - Ext4 Partition & Image Mounting Utility"
 authors = ["Alfazen Inc."]
 edition = "2021"
@@ -27,5 +27,7 @@ windows = { version = "0.58", features = [
     "Win32_System_IO",
     "Win32_System_Ioctl",
     "Win32_NetworkManagement_WNet",
-    "Win32_Security"
+    "Win32_Security",
+    "Win32_Devices_DeviceAndDriverInstallation",
+    "Win32_System_SystemInformation"
 ] }

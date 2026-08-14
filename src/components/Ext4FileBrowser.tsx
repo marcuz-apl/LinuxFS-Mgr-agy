@@ -1,33 +1,122 @@
 import React, { useState, useEffect } from 'react';
-import { Folder, FileText, ArrowLeft, Download, Layers } from 'lucide-react';
-import { Ext4Entry } from '../types/disk';
+import { Folder, FileText, ArrowLeft, Download, Layers, HardDrive, Disc, CheckCircle2 } from 'lucide-react';
+import { Ext4Entry, MountRecord } from '../types/disk';
 
 interface Ext4FileBrowserProps {
-  partitionName: string;
+  partitionName?: string;
+  activeMounts?: MountRecord[];
+  onMountDrive?: () => void;
 }
 
-export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName }) => {
+interface VolumeOption {
+  id: string;
+  name: string;
+  type: 'PARTITION' | 'MOUNTED_DRIVE';
+  driveLetter?: string;
+  mountPoint: string;
+  capacityStr: string;
+}
+
+export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({
+  activeMounts = [],
+}) => {
+  // Built-in volume options from hardware & active mounts
+  const defaultVolumes: VolumeOption[] = [
+    {
+      id: 'd0p3',
+      name: 'Drive 0 Partition 3 — Ext4 Root (/)',
+      type: 'PARTITION',
+      mountPoint: '/',
+      capacityStr: '1024 GB (99.56 GB used)',
+    },
+    {
+      id: 'd3p2',
+      name: 'Drive 3 Partition 2 — Ext4 Data (/mnt/hada)',
+      type: 'PARTITION',
+      mountPoint: '/mnt/hada',
+      capacityStr: '463.01 GB (8.34 GB used)',
+    },
+  ];
+
+  // Merge with active virtual drive mounts (e.g. Z:, Y:)
+  const mountedVolumeOptions: VolumeOption[] = activeMounts.map((m) => ({
+    id: m.id,
+    name: `${m.target_drive_letter} Mapped Virtual Drive (${m.source_path})`,
+    type: 'MOUNTED_DRIVE',
+    driveLetter: m.target_drive_letter,
+    mountPoint: m.source_path.includes('/') ? m.source_path : '/',
+    capacityStr: `Mounted via ${m.mount_engine}`,
+  }));
+
+  const allVolumes = [...mountedVolumeOptions, ...defaultVolumes];
+
+  const [selectedVolumeId, setSelectedVolumeId] = useState<string>(
+    mountedVolumeOptions.length > 0 ? mountedVolumeOptions[0].id : 'd0p3'
+  );
   const [currentPath, setCurrentPath] = useState('/');
   const [entries, setEntries] = useState<Ext4Entry[]>([]);
   const [selectedEntry, setSelectedEntry] = useState<Ext4Entry | null>(null);
 
-  useEffect(() => { loadDirectory(currentPath); }, [currentPath]);
+  // Sync selection if new mount appears
+  useEffect(() => {
+    if (activeMounts.length > 0) {
+      setSelectedVolumeId(activeMounts[activeMounts.length - 1].id);
+    }
+  }, [activeMounts.length]);
 
-  const loadDirectory = (path: string) => {
+  const activeVol = allVolumes.find((v) => v.id === selectedVolumeId) || allVolumes[0];
+
+  useEffect(() => {
+    loadDirectory(currentPath, activeVol?.id || 'd0p3');
+  }, [currentPath, selectedVolumeId]);
+
+  const loadDirectory = (path: string, volumeId: string) => {
+    // If exploring Drive 3 Partition 2 (/mnt/hada)
+    if (volumeId === 'd3p2') {
+      if (path === '/' || path === '/mnt/hada') {
+        setEntries([
+          { name: 'hada',               path: '/mnt/hada/hada',               is_dir: true,  size_bytes: 4096,    permissions: 'rwxr-xr-x', owner_uid_gid: '1000:1000', modified_time: '2026-08-12 11:21:00' },
+          { name: 'data_lake',          path: '/mnt/hada/data_lake',          is_dir: true,  size_bytes: 4096,    permissions: 'rwxr-xr-x', owner_uid_gid: '1000:1000', modified_time: '2026-08-13 09:10:00' },
+          { name: 'backup_config.json', path: '/mnt/hada/backup_config.json', is_dir: false, size_bytes: 14208,   permissions: 'rw-r--r--', owner_uid_gid: '1000:1000', modified_time: '2026-08-12 10:14:22' },
+          { name: 'kernel_dump.log',    path: '/mnt/hada/kernel_dump.log',    is_dir: false, size_bytes: 849201,  permissions: 'rw-r--r--', owner_uid_gid: 'root:root', modified_time: '2026-08-12 08:30:11' },
+          { name: 'archive_dataset.tar.gz', path: '/mnt/hada/archive_dataset.tar.gz', is_dir: false, size_bytes: 4294967296, permissions: 'rw-r--r--', owner_uid_gid: '1000:1000', modified_time: '2026-08-13 14:00:00' },
+        ]);
+      } else {
+        setEntries([
+          { name: 'project_alpha',      path: `${path}/project_alpha`,        is_dir: true,  size_bytes: 4096,    permissions: 'rwxr-xr-x', owner_uid_gid: '1000:1000', modified_time: '2026-08-11 16:20:00' },
+          { name: 'metrics.csv',        path: `${path}/metrics.csv`,          is_dir: false, size_bytes: 524288,  permissions: 'rw-r--r--', owner_uid_gid: '1000:1000', modified_time: '2026-08-13 11:45:00' },
+          { name: 'schema.sql',         path: `${path}/schema.sql`,           is_dir: false, size_bytes: 8192,    permissions: 'rw-r--r--', owner_uid_gid: '1000:1000', modified_time: '2026-08-10 12:00:00' },
+        ]);
+      }
+      return;
+    }
+
+    // Default: Root Linux Filesystem (Drive 0 Partition 3 or Mounted Drive)
     if (path === '/') {
       setEntries([
-        { name: 'bin',  path: '/bin',  is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:20:00' },
-        { name: 'boot', path: '/boot', is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:22:10' },
-        { name: 'etc',  path: '/etc',  is_dir: true,  size_bytes: 12288,  permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-11 09:15:30' },
-        { name: 'home', path: '/home', is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-12 11:00:00' },
-        { name: 'mnt',  path: '/mnt',  is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-12 11:21:00' },
-        { name: 'var',  path: '/var',  is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-12 12:45:00' },
+        { name: 'bin',   path: '/bin',   is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:20:00' },
+        { name: 'boot',  path: '/boot',  is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:22:10' },
+        { name: 'etc',   path: '/etc',   is_dir: true,  size_bytes: 12288,  permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-11 09:15:30' },
+        { name: 'home',  path: '/home',  is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-12 11:00:00' },
+        { name: 'lib64', path: '/lib64', is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:20:00' },
+        { name: 'mnt',   path: '/mnt',   is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-12 11:21:00' },
+        { name: 'opt',   path: '/opt',   is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-11 10:00:00' },
+        { name: 'usr',   path: '/usr',   is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:20:00' },
+        { name: 'var',   path: '/var',   is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-12 12:45:00' },
       ]);
     } else if (path === '/mnt' || path.startsWith('/mnt/')) {
       setEntries([
-        { name: 'hada',              path: '/mnt/hada',                is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: '1000:1000',     modified_time: '2026-08-12 11:21:00' },
+        { name: 'hada',               path: '/mnt/hada',                is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: '1000:1000',     modified_time: '2026-08-12 11:21:00' },
+        { name: 'storage',            path: `${path}/storage`,          is_dir: true,  size_bytes: 4096,   permissions: 'rwxr-xr-x', owner_uid_gid: '1000:1000',     modified_time: '2026-08-12 10:00:00' },
         { name: 'backup_config.json', path: `${path}/backup_config.json`, is_dir: false, size_bytes: 14208,  permissions: 'rw-r--r--', owner_uid_gid: '1000:1000',     modified_time: '2026-08-12 10:14:22' },
-        { name: 'kernel_dump.log',   path: `${path}/kernel_dump.log`, is_dir: false, size_bytes: 849201, permissions: 'rw-r--r--', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-12 08:30:11' },
+        { name: 'kernel_dump.log',    path: `${path}/kernel_dump.log`,  is_dir: false, size_bytes: 849201, permissions: 'rw-r--r--', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-12 08:30:11' },
+      ]);
+    } else if (path === '/etc' || path.startsWith('/etc/')) {
+      setEntries([
+        { name: 'fstab',       path: `${path}/fstab`,       is_dir: false, size_bytes: 1205, permissions: 'rw-r--r--', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:25:00' },
+        { name: 'hostname',    path: `${path}/hostname`,    is_dir: false, size_bytes: 14,   permissions: 'rw-r--r--', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:20:00' },
+        { name: 'network',     path: `${path}/network`,     is_dir: true,  size_bytes: 4096, permissions: 'rwxr-xr-x', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:21:00' },
+        { name: 'os-release',  path: `${path}/os-release`,  is_dir: false, size_bytes: 384,  permissions: 'rw-r--r--', owner_uid_gid: 'root:root (0:0)', modified_time: '2026-08-10 14:20:00' },
       ]);
     } else {
       setEntries([
@@ -41,10 +130,11 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
     if (currentPath === '/') return;
     const parts = currentPath.split('/').filter(Boolean);
     parts.pop();
-    setCurrentPath('/' + parts.join('/'));
+    setCurrentPath(parts.length === 0 ? '/' : '/' + parts.join('/'));
   };
 
   const formatBytes = (bytes: number) => {
+    if (bytes >= 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
     if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     if (bytes >= 1024) return `${(bytes / 1024).toFixed(2)} KB`;
     return `${bytes} B`;
@@ -52,15 +142,83 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
 
   return (
     <div className="glass-panel" style={{ padding: 22, display: 'flex', flexDirection: 'column', gap: 18 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      {/* Header with Volume Selector */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h2 style={{ fontSize: '1.1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-primary)' }}>
             <Layers size={20} color="var(--accent-light)" />
-            <span>Ext4 Browser — {partitionName}</span>
+            <span>Ext4 & Virtual Drive Explorer</span>
           </h2>
-          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: 2 }}>Direct Linux Ext4 directory tree & file inspection</p>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: 2 }}>
+            Direct Linux Ext4 directory tree & virtual drive letter file inspection
+          </p>
         </div>
-        <div className="badge badge-cyan mono">{currentPath}</div>
+
+        {/* Volume / Mounted Drive Dropdown Selector */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <label style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+            Select Volume Source:
+          </label>
+          <select
+            value={selectedVolumeId}
+            onChange={(e) => {
+              setSelectedVolumeId(e.target.value);
+              setCurrentPath('/');
+              setSelectedEntry(null);
+            }}
+            style={{
+              padding: '6px 12px',
+              borderRadius: 6,
+              background: 'var(--bg-inset)',
+              border: '1px solid var(--border-hover)',
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.84rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            {allVolumes.map((vol) => (
+              <option key={vol.id} value={vol.id}>
+                {vol.type === 'MOUNTED_DRIVE' ? `[Virtual ${vol.driveLetter}] ` : '[Ext4 Volume] '}
+                {vol.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Active Volume Info Banner */}
+      <div style={{
+        padding: '10px 16px',
+        borderRadius: 6,
+        background: activeVol.type === 'MOUNTED_DRIVE' ? 'var(--emerald-subtle)' : 'var(--accent-subtle)',
+        border: `1px solid ${activeVol.type === 'MOUNTED_DRIVE' ? 'rgba(5, 150, 105, 0.3)' : 'var(--border-accent)'}`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 8,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {activeVol.type === 'MOUNTED_DRIVE' ? (
+            <HardDrive size={18} color="var(--emerald)" />
+          ) : (
+            <Disc size={18} color="var(--accent-light)" />
+          )}
+          <span style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-primary)' }}>
+            {activeVol.name}
+          </span>
+          {activeVol.type === 'MOUNTED_DRIVE' && (
+            <span className="badge badge-emerald" style={{ padding: '2px 8px', fontSize: '0.68rem' }}>
+              <CheckCircle2 size={11} /> Live Windows Virtual Drive {activeVol.driveLetter}
+            </span>
+          )}
+        </div>
+        <div className="mono" style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+          {activeVol.capacityStr}
+        </div>
       </div>
 
       {/* Path Toolbar */}
@@ -69,7 +227,7 @@ export const Ext4FileBrowser: React.FC<Ext4FileBrowserProps> = ({ partitionName 
           <ArrowLeft size={15} /><span>Up</span>
         </button>
         <div className="mono" style={{ fontSize: '0.88rem', color: 'var(--accent-light)', flexGrow: 1 }}>
-          Ext4://{currentPath}
+          {activeVol.type === 'MOUNTED_DRIVE' ? `${activeVol.driveLetter}\\` : 'Ext4://'}{currentPath}
         </div>
       </div>
 

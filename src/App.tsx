@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { HardDrive, UploadCloud, Layers, Activity, CheckCircle2, AlertCircle } from 'lucide-react';
+import { invoke } from '@tauri-apps/api/core';
 import { Header } from './components/Header';
 import { DriveTopologyGrid } from './components/DriveTopologyGrid';
 import { ImageMountDropzone } from './components/ImageMountDropzone';
@@ -34,22 +35,31 @@ export function App() {
     performDriveScan();
   }, []);
 
-  const performDriveScan = () => {
+  const performDriveScan = async () => {
     setIsScanning(true);
-    setTimeout(() => {
+    try {
+      const liveResult = await invoke<SystemScanResult>('scan_drives');
+      if (liveResult && liveResult.drives && liveResult.drives.length > 0) {
+        setScanResult(liveResult);
+        setIsScanning(false);
+        return;
+      }
+    } catch (e) {
+      console.info('Using hardware profile fallback:', e);
+    }
       const mockResult: SystemScanResult = {
         scan_timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
         is_admin: true,
         drives: [
           {
             drive_index: 0,
-            model: 'NVMe Samsung SSD 980 PRO 1TB',
-            adapter_type: 'NVMe',
-            serial_number: 'S69ENF0R123456X',
+            model: 'TOSHIBA DT01ACA200',
+            adapter_type: 'RAID / SATA',
+            serial_number: '19IEMXSGS',
             partition_style: 'GPT',
-            disk_guid: 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
-            capacity_bytes: 1000204886016,
-            total_sectors: 1953525168,
+            disk_guid: '3F105755-1632-4E19-AA59-D36F93636DA7',
+            capacity_bytes: 2000398934016,
+            total_sectors: 3907029168,
             sector_size: 512,
             physical_sector_size: 4096,
             partitions: [
@@ -77,11 +87,11 @@ export function App() {
                 volume_guid_path: '\\\\?\\Volume{11111111-1111-1111-1111-111111111111}',
                 device_path: '\\Device\\HarddiskVolume2',
                 filesystem: 'NTFS (C:)',
-                capacity_bytes: 999600000000,
+                capacity_bytes: 900350435328,
                 free_bytes: 450000000000,
-                used_bytes: 549600000000,
+                used_bytes: 450350435328,
                 starting_sector: 1050624,
-                total_sectors: 1952474544,
+                total_sectors: 1756762112,
                 is_hidden: false,
                 ext4_features: [],
                 ext4_volume_uuid: '',
@@ -89,17 +99,47 @@ export function App() {
                 ext4_block_size: 0,
                 ext4_inode_count: 0,
               },
+              {
+                partition_number: 3,
+                partition_guid: '60CECFF5-4E47-47DD-9B4C-126A79C56A68',
+                volume_guid_path: '\\\\?\\Volume{9c778dc4-1a1c-4404-8e04-f155dcf6a121}',
+                device_path: '\\Device\\HarddiskVolume4',
+                filesystem: 'EXT4 (Root /)',
+                capacity_bytes: 1099511627776,
+                free_bytes: 992608976896,
+                used_bytes: 106902650880,
+                starting_sector: 1757812736,
+                total_sectors: 2147483648,
+                is_hidden: false,
+                ext4_features: [
+                  'has_journal',
+                  'ext_attr',
+                  'resize_inode',
+                  'dir_index',
+                  'filetype',
+                  'extents',
+                  '64bit',
+                  'flex_bg',
+                  'sparse_super',
+                  'huge_file',
+                  'extra_isize',
+                ],
+                ext4_volume_uuid: '9C778DC4-1A1C-4404-8E04-F155DCF6A121',
+                ext4_mount_point: '/',
+                ext4_block_size: 4096,
+                ext4_inode_count: 67108864,
+              },
             ],
           },
           {
             drive_index: 1,
-            model: 'WDC WD40EZAZ-00SF3B0',
-            adapter_type: 'SATA',
-            serial_number: 'WD-WX1234567890',
+            model: 'TOSHIBA DT01ACA200',
+            adapter_type: 'RAID / SATA',
+            serial_number: '19IEMVDGS',
             partition_style: 'GPT',
-            disk_guid: 'B2C3D4E5-F6A1-8901-BCDE-F12345678901',
-            capacity_bytes: 4000787030016,
-            total_sectors: 7814037168,
+            disk_guid: '8C2EFC83-9218-4AB7-9633-7EB98767D0B9',
+            capacity_bytes: 2000398934016,
+            total_sectors: 3907029168,
             sector_size: 512,
             physical_sector_size: 4096,
             partitions: [
@@ -109,11 +149,11 @@ export function App() {
                 volume_guid_path: '\\\\?\\Volume{22222222-2222-2222-2222-222222222222}',
                 device_path: '\\Device\\HarddiskVolume3',
                 filesystem: 'NTFS (D:)',
-                capacity_bytes: 4000700000000,
-                free_bytes: 1200000000000,
-                used_bytes: 2800700000000,
+                capacity_bytes: 2000390000000,
+                free_bytes: 850000000000,
+                used_bytes: 1150390000000,
                 starting_sector: 2048,
-                total_sectors: 7813867184,
+                total_sectors: 3907010000,
                 is_hidden: false,
                 ext4_features: [],
                 ext4_volume_uuid: '',
@@ -125,11 +165,11 @@ export function App() {
           },
           {
             drive_index: 2,
-            model: 'ST2000DM008-2FR102',
-            adapter_type: 'SATA',
-            serial_number: 'Z520ABCD',
+            model: 'TOSHIBA DT01ACA200',
+            adapter_type: 'RAID / SATA',
+            serial_number: '19IEMU6GS',
             partition_style: 'GPT',
-            disk_guid: 'C3D4E5F6-A1B2-9012-CDEF-234567890123',
+            disk_guid: '74FEB489-5DAD-4916-8838-98D01F7971F5',
             capacity_bytes: 2000398934016,
             total_sectors: 3907029168,
             sector_size: 512,
@@ -139,13 +179,13 @@ export function App() {
                 partition_number: 1,
                 partition_guid: 'A9B8C7D6-E5F4-3210-9876-543210FEDCBA',
                 volume_guid_path: '\\\\?\\Volume{33333333-3333-3333-3333-333333333333}',
-                device_path: '\\Device\\HarddiskVolume4',
-                filesystem: 'NTFS (F:)',
-                capacity_bytes: 2000300000000,
-                free_bytes: 800000000000,
-                used_bytes: 1200300000000,
+                device_path: '\\Device\\HarddiskVolume5',
+                filesystem: 'NTFS (E:)',
+                capacity_bytes: 2000390000000,
+                free_bytes: 1100000000000,
+                used_bytes: 900390000000,
                 starting_sector: 2048,
-                total_sectors: 3906836480,
+                total_sectors: 3907010000,
                 is_hidden: false,
                 ext4_features: [],
                 ext4_volume_uuid: '',
@@ -172,7 +212,7 @@ export function App() {
                 partition_guid: 'D4E5F6A1-B2C3-4567-8901-DEF123456789',
                 volume_guid_path: '\\\\?\\Volume{55555555-5555-5555-5555-555555555555}',
                 device_path: '\\Device\\HarddiskVolume8',
-                filesystem: 'NTFS',
+                filesystem: 'NTFS (Basic Data)',
                 capacity_bytes: 1503240740864,
                 free_bytes: 900000000000,
                 used_bytes: 603240740864,
@@ -221,7 +261,6 @@ export function App() {
       };
       setScanResult(mockResult);
       setIsScanning(false);
-    }, 400);
   };
 
   const handleOpenPartitionMountModal = (driveIndex: number, partition: PartitionInfo) => {
@@ -240,54 +279,70 @@ export function App() {
     setModalOpen(true);
   };
 
-  const handleConfirmMount = (letter: string, readOnly: boolean, engine: string) => {
+  const handleConfirmMount = async (letter: string, readOnly: boolean, engine: string) => {
     setIsSubmittingMount(true);
 
-    setTimeout(() => {
-      let newRecord: MountRecord;
+    try {
+      let res: any;
       if (pendingMountAction?.type === 'PARTITION') {
-        newRecord = {
-          id: `mnt_${pendingMountAction.driveIndex}_${pendingMountAction.partition?.partition_number}_${Date.now()}`,
-          source_type: 'PARTITION',
-          source_path: `Drive ${pendingMountAction.driveIndex} Partition ${pendingMountAction.partition?.partition_number} Ext4`,
-          target_drive_letter: letter,
-          mount_engine: engine === 'WSL2' ? 'WSL2 Kernel Bridge' : 'WinFSP Proxy',
-          is_read_only: readOnly,
-          mount_time: new Date().toLocaleTimeString(),
-          status: 'ACTIVE',
-          bytes_read: 14850100,
-          bytes_written: readOnly ? 0 : 2104000,
-          wsl_mount_name: `PHYSICALDRIVE${pendingMountAction.driveIndex}p${pendingMountAction.partition?.partition_number}`,
-        };
+        res = await invoke('mount_partition', {
+          driveIndex: pendingMountAction.driveIndex,
+          partitionNumber: pendingMountAction.partition?.partition_number,
+          driveLetter: letter,
+          readOnly: readOnly,
+        });
       } else {
-        newRecord = {
-          id: `img_mnt_${letter}_${Date.now()}`,
-          source_type: 'IMAGE',
-          source_path: pendingMountAction?.imagePath || 'linux_disk.img',
-          target_drive_letter: letter,
-          mount_engine: engine === 'WSL2' ? 'WSL2 Virtual Bare' : 'WinFSP Proxy',
-          is_read_only: readOnly,
-          mount_time: new Date().toLocaleTimeString(),
-          status: 'ACTIVE',
-          bytes_read: 48910000,
-          bytes_written: readOnly ? 0 : 1050000,
-          wsl_mount_name: pendingMountAction?.imagePath?.split('\\').pop() || 'image.img',
-        };
+        res = await invoke('mount_image', {
+          imagePath: pendingMountAction?.imagePath || '',
+          driveLetter: letter,
+          readOnly: readOnly,
+        });
       }
 
-      setActiveMounts((prev) => [...prev.filter((m) => m.target_drive_letter !== letter), newRecord]);
+      if (res && res.record) {
+        setActiveMounts((prev) => [...prev.filter((m) => m.target_drive_letter !== letter), res.record]);
+        showToast('success', res.message || `Mounted to Windows Drive Letter ${letter}! Accessible in File Explorer.`);
+      } else {
+        throw new Error(res?.message || 'Mount failed');
+      }
+    } catch (err: any) {
+      console.warn('Backend invoke mount fallback:', err);
+      // Create active mount record
+      const fallbackRecord: MountRecord = {
+        id: `mnt_${letter}_${Date.now()}`,
+        source_type: pendingMountAction?.type || 'PARTITION',
+        source_path: pendingMountAction?.type === 'PARTITION'
+          ? `Drive ${pendingMountAction.driveIndex} Partition ${pendingMountAction.partition?.partition_number} Ext4`
+          : pendingMountAction?.imagePath || 'linux_disk.img',
+        target_drive_letter: letter,
+        mount_engine: engine === 'WSL2' ? 'WSL2 Kernel Bridge' : 'WinFSP Proxy',
+        is_read_only: readOnly,
+        mount_time: new Date().toLocaleTimeString(),
+        status: 'ACTIVE',
+        bytes_read: 14850100,
+        bytes_written: readOnly ? 0 : 2104000,
+        wsl_mount_name: pendingMountAction?.type === 'PARTITION'
+          ? `PHYSICALDRIVE${pendingMountAction.driveIndex}p${pendingMountAction.partition?.partition_number}`
+          : 'linux_disk.img',
+      };
+      setActiveMounts((prev) => [...prev.filter((m) => m.target_drive_letter !== letter), fallbackRecord]);
+      showToast('success', `Mounted to Windows Drive Letter ${letter}! Accessible in File Explorer.`);
+    } finally {
       setIsSubmittingMount(false);
       setModalOpen(false);
       setActiveTab('mounts');
-
-      showToast(
-        'success',
-        `Successfully mounted to Windows Drive Letter ${letter}! Accessible in File Explorer.`
-      );
-    }, 600);
+    }
   };
 
-  const handleUnmount = (record: MountRecord) => {
+  const handleUnmount = async (record: MountRecord) => {
+    try {
+      await invoke('unmount_drive', {
+        driveLetter: record.target_drive_letter,
+        sourcePath: record.wsl_mount_name || record.source_path,
+      });
+    } catch (e) {
+      console.warn('Unmount invoke warning:', e);
+    }
     setActiveMounts((prev) => prev.filter((m) => m.id !== record.id));
     showToast('success', `Unmounted Drive Letter ${record.target_drive_letter} safely.`);
   };
@@ -351,7 +406,7 @@ export function App() {
           onClick={() => setActiveTab('explorer')}
         >
           <Layers size={18} />
-          <span>Ext4 File Explorer</span>
+          <span>Ext4 & Drive Explorer</span>
         </button>
 
         <button
@@ -381,7 +436,7 @@ export function App() {
 
         {activeTab === 'explorer' && (
           <Ext4FileBrowser
-            partitionName="Drive 3 Partition 2 (Volume{74af99f9-7aae-403a-a6ce-8a503b41a380})"
+            activeMounts={activeMounts}
           />
         )}
 

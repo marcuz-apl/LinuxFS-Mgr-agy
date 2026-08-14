@@ -23,9 +23,9 @@ export const DriveTopologyGrid: React.FC<DriveTopologyGridProps> = ({
   return (
     <div className="drives-grid">
       {drives.map((drive) => {
-        const isTargetToshiba = drive.drive_index === 3;
+        const hasExt4 = drive.partitions.some((p) => p.filesystem.toUpperCase().includes('EXT4'));
         return (
-          <div key={drive.drive_index} className={`glass-panel drive-card ${isTargetToshiba ? 'glass-panel-glow' : ''}`}>
+          <div key={drive.drive_index} className={`glass-panel drive-card ${hasExt4 ? 'glass-panel-glow' : ''}`}>
             <div className="drive-card-header">
               <div className="drive-info">
                 <div className="drive-icon">
@@ -41,8 +41,8 @@ export const DriveTopologyGrid: React.FC<DriveTopologyGridProps> = ({
                   </div>
                 </div>
               </div>
-              {isTargetToshiba ? (
-                <div className="badge badge-cyan"><CheckCircle2 size={13} /><span>Target Ext4 Drive</span></div>
+              {hasExt4 ? (
+                <div className="badge badge-cyan"><CheckCircle2 size={13} /><span>Ext4 Host Drive</span></div>
               ) : (
                 <div className="badge badge-emerald"><span>Online</span></div>
               )}

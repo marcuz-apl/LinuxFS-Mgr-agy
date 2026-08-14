@@ -13,7 +13,7 @@ export const MountModal: React.FC<MountModalProps> = ({ title, sourceDescription
   const availableLetters = ['Z:', 'Y:', 'X:', 'W:', 'V:', 'U:', 'T:', 'S:', 'R:', 'Q:', 'P:', 'O:', 'N:', 'M:', 'L:', 'K:', 'J:', 'I:', 'H:', 'G:', 'E:'];
   const [selectedLetter, setSelectedLetter] = useState('Z:');
   const [readOnly, setReadOnly] = useState(true);
-  const [engine, setEngine] = useState('WSL2');
+  const [engine, setEngine] = useState('NATIVE');
 
   const engineCard = (id: string, label: string, desc: string, icon: React.ReactNode) => (
     <div
@@ -69,8 +69,8 @@ export const MountModal: React.FC<MountModalProps> = ({ title, sourceDescription
             Mount Engine Architecture:
           </label>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {engineCard('WSL2', 'WSL2 Kernel Bridge', 'Linux 6.x Kernel via Windows Network Redirector (\\\\wsl.localhost\\)', <Cpu size={15} />)}
-            {engineCard('WinFSP', 'WinFSP Userland Proxy', 'Standalone file system proxy, no Hyper-V required', <HardDrive size={15} />)}
+            {engineCard('NATIVE', 'Native Win32 Virtual Bridge', 'Direct local Windows filesystem bridge (Zero WSL required)', <Cpu size={15} />)}
+            {engineCard('WinFSP', 'WinFSP Userland Proxy', 'Userland file system proxy, fully standalone', <HardDrive size={15} />)}
           </div>
         </div>
 
